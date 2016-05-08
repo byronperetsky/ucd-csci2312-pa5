@@ -35,13 +35,46 @@ namespace CS2312 {
             typedef std::forward_iterator_tag iterator_category;
             typedef size_type difference_type;
 
-            iterator(pointer ptr);
-            self_type operator++();
-            self_type operator++(int junk);
-            reference operator*();
-            pointer operator->();
-            bool operator==(const self_type& rhs) const;
-            bool operator!=(const self_type& rhs) const;
+            iterator(pointer ptr): __ptr(ptr){}
+            self_type operator++(){
+                __ptr++;
+                return *this;
+            }
+            self_type operator++(int junk){
+                self_type prev(__ptr);
+                __ptr++;
+                return prev;
+            }
+            reference operator*(){
+                return *__ptr;
+            }
+            pointer operator->(){
+                return __ptr;
+            }
+            bool operator==(const self_type& rhs) const {
+
+                if(__ptr == rhs.__ptr)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            bool operator!=(const self_type& rhs) const {
+
+                if(__ptr == rhs.__ptr)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
 
         private:
 
@@ -60,13 +93,35 @@ namespace CS2312 {
             typedef std::forward_iterator_tag iterator_category;
             typedef size_type difference_type;
 
-            const_iterator(pointer ptr);
-            self_type operator++();
-            self_type operator++(int junk);
-            const value_type& operator*() const;
-            const value_type* operator->() const;
-            bool operator==(const self_type& rhs) const;
-            bool operator!=(const self_type& rhs) const;
+            const_iterator(pointer ptr){ __ptr = ptr;}
+            self_type operator++(){__ptr++; return *this;}
+            self_type operator++(int junk){self_type prev(__ptr); __ptr++; return prev;}
+            const value_type& operator*() const {return *__ptr;}
+            const value_type* operator->() const {return __ptr;}
+            bool operator==(const self_type& rhs) const {
+
+                if(__ptr == rhs.__ptr)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            bool operator!=(const self_type& rhs) const {
+
+                if(__ptr == rhs.__ptr)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
 
         private:
 
@@ -75,25 +130,45 @@ namespace CS2312 {
         };
 
 
-        fixed_array(size_type size);
+        fixed_array(size_type size){
 
-        fixed_array(std::initializer_list<T> list);
+            __data = new T [size];
+            __size = size;
+        }
 
-        ~fixed_array();
+        fixed_array(std::initializer_list<T> list){
 
-        size_type size() const;
 
-        T& operator[](size_type index);
+            __size = list.size();
+            __data = new T[list.size()];
 
-        const T& operator[](size_type index) const;
+            int index = 0;
 
-        iterator begin();
+            for(auto iter = list.begin(); iter != list.end(); ++iter) {
 
-        iterator end();
+                __data[index] = *iter;
 
-        const_iterator begin() const;
+                index++;
+            }
 
-        const_iterator end() const;
+
+        }
+
+        ~fixed_array() {delete __data;}
+
+        size_type size() const { return __size;}
+
+        T& operator[](size_type index) {return __data[index];}
+
+        const T& operator[](size_type index) const {return __data[index];}
+
+        iterator begin() {return iterator(__data);}
+
+        iterator end() {return iterator(__data + __size); }
+
+        const_iterator begin() const {return const_iterator(__data);}
+
+        const_iterator end() const {return const_iterator(__data + __size);}
 
     private:
 
